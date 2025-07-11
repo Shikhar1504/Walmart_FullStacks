@@ -4,14 +4,13 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useCart } from "../../contexts/CartContext"
 import { useAuth } from "../../contexts/AuthContext"
-import { useToast } from "../../contexts/ToastContext"
+import { toast } from "sonner"
 import { CreditCard, Truck, Lock, CheckCircle } from "lucide-react"
 
 export default function CheckoutPage() {
   const navigate = useNavigate()
   const { cart, getCartTotal, getCartSubtotal, getDiscountTotal, clearCart, createOrder } = useCart()
   const { user } = useAuth()
-  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({

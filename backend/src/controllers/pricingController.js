@@ -12,7 +12,170 @@ exports.getAllPricingItems = async (req, res, next) => {
       .populate('supplierId')
       .sort({ lastUpdated: -1 });
     
-    res.json(pricingItems);
+    // If no pricing items found, provide mock data
+    if (pricingItems.length === 0) {
+      const mockPricingItems = [
+        {
+          _id: 'mock-pricing-1',
+          productId: {
+            _id: 'mock-product-1',
+            name: 'Wireless Bluetooth Headphones',
+            sku: 'WH-001'
+          },
+          supplierId: {
+            _id: 'mock-supplier-1',
+            name: 'Tech Supplies Inc'
+          },
+          supplierName: 'Tech Supplies Inc',
+          currentPrice: 49.99,
+          originalPrice: 59.99,
+          cost: 35.00,
+          stock: 45,
+          maxStock: 100,
+          minStockLevel: 10,
+          name: 'Wireless Bluetooth Headphones',
+          sku: 'WH-001',
+          category: 'Electronics',
+          expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          isPerishable: false,
+          demand: 85,
+          mlScore: 92,
+          lastUpdated: new Date(),
+          history: [
+            { price: 59.99, reason: 'Initial price', mlScore: 75, timestamp: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+            { price: 49.99, reason: 'Promotional discount', mlScore: 92, timestamp: new Date() }
+          ]
+        },
+        {
+          _id: 'mock-pricing-2',
+          productId: {
+            _id: 'mock-product-2',
+            name: 'Smart Fitness Watch',
+            sku: 'SW-002'
+          },
+          supplierId: {
+            _id: 'mock-supplier-2',
+            name: 'Gadget World'
+          },
+          supplierName: 'Gadget World',
+          currentPrice: 199.99,
+          originalPrice: 249.99,
+          cost: 150.00,
+          stock: 12,
+          maxStock: 50,
+          minStockLevel: 15,
+          name: 'Smart Fitness Watch',
+          sku: 'SW-002',
+          category: 'Electronics',
+          expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          isPerishable: false,
+          demand: 67,
+          mlScore: 88,
+          lastUpdated: new Date(),
+          history: [
+            { price: 249.99, reason: 'Initial price', mlScore: 70, timestamp: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000) },
+            { price: 199.99, reason: 'Competitive pricing', mlScore: 88, timestamp: new Date() }
+          ]
+        },
+        {
+          _id: 'mock-pricing-3',
+          productId: {
+            _id: 'mock-product-3',
+            name: 'Adjustable Laptop Stand',
+            sku: 'LS-003'
+          },
+          supplierId: {
+            _id: 'mock-supplier-3',
+            name: 'Office Supplies Co'
+          },
+          supplierName: 'Office Supplies Co',
+          currentPrice: 29.99,
+          originalPrice: 39.99,
+          cost: 20.00,
+          stock: 0,
+          maxStock: 25,
+          minStockLevel: 5,
+          name: 'Adjustable Laptop Stand',
+          sku: 'LS-003',
+          category: 'Accessories',
+          expirationDate: null,
+          isPerishable: false,
+          demand: 45,
+          mlScore: 76,
+          lastUpdated: new Date(),
+          history: [
+            { price: 39.99, reason: 'Initial price', mlScore: 65, timestamp: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) },
+            { price: 29.99, reason: 'Clearance sale', mlScore: 76, timestamp: new Date() }
+          ]
+        },
+        {
+          _id: 'mock-pricing-4',
+          productId: {
+            _id: 'mock-product-4',
+            name: 'Premium USB-C Cable',
+            sku: 'UC-004'
+          },
+          supplierId: {
+            _id: 'mock-supplier-4',
+            name: 'Cable Solutions'
+          },
+          supplierName: 'Cable Solutions',
+          currentPrice: 4.99,
+          originalPrice: 6.99,
+          cost: 2.50,
+          stock: 78,
+          maxStock: 200,
+          minStockLevel: 20,
+          name: 'Premium USB-C Cable',
+          sku: 'UC-004',
+          category: 'Electronics',
+          expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          isPerishable: false,
+          demand: 92,
+          mlScore: 95,
+          lastUpdated: new Date(),
+          history: [
+            { price: 6.99, reason: 'Initial price', mlScore: 80, timestamp: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) },
+            { price: 4.99, reason: 'Volume discount', mlScore: 95, timestamp: new Date() }
+          ]
+        },
+        {
+          _id: 'mock-pricing-5',
+          productId: {
+            _id: 'mock-product-5',
+            name: 'Slim Phone Case',
+            sku: 'PC-005'
+          },
+          supplierId: {
+            _id: 'mock-supplier-5',
+            name: 'Mobile Accessories Ltd'
+          },
+          supplierName: 'Mobile Accessories Ltd',
+          currentPrice: 19.99,
+          originalPrice: 24.99,
+          cost: 12.00,
+          stock: 8,
+          maxStock: 75,
+          minStockLevel: 10,
+          name: 'Slim Phone Case',
+          sku: 'PC-005',
+          category: 'Accessories',
+          expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          isPerishable: false,
+          demand: 73,
+          mlScore: 84,
+          lastUpdated: new Date(),
+          history: [
+            { price: 24.99, reason: 'Initial price', mlScore: 72, timestamp: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+            { price: 19.99, reason: 'Seasonal promotion', mlScore: 84, timestamp: new Date() }
+          ]
+        }
+      ];
+      
+      res.json(mockPricingItems);
+    } else {
+      res.json(pricingItems);
+    }
   } catch (err) { next(err); }
 };
 
@@ -394,5 +557,133 @@ exports.getProductMLAnalytics = async (req, res, next) => {
     console.error('❌ Error in getProductMLAnalytics:', err);
     console.error('❌ Error stack:', err.stack);
     next(err);
+  }
+}; 
+
+// Get time-series pricing data for a product over 30 days
+exports.getProductPricingTimeSeries = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    
+    // Find the pricing item for this product
+    const pricingItem = await Pricing.findOne({ productId }).populate('supplierId');
+    
+    if (!pricingItem) {
+      return res.status(404).json({ message: 'Pricing item not found for this product' });
+    }
+
+    // Generate 30 days of pricing data based on expiry date and stock levels
+    const timeSeriesData = [];
+    const currentDate = new Date();
+    const expiryDate = pricingItem.expirationDate ? new Date(pricingItem.expirationDate) : null;
+    const isPerishable = pricingItem.isPerishable;
+    const basePrice = pricingItem.currentPrice;
+    const baseStock = pricingItem.stock;
+    const maxStock = pricingItem.maxStock;
+
+    for (let day = 0; day < 30; day++) {
+      const date = new Date(currentDate);
+      date.setDate(date.getDate() + day);
+      
+      let price = basePrice;
+      let stock = Math.max(0, baseStock - (day * 2)); // Simulate daily stock reduction
+      
+      // Calculate price adjustments based on various factors
+      let priceAdjustment = 0;
+      
+      // Factor 1: Expiry date urgency (for perishable items)
+      if (isPerishable && expiryDate) {
+        const daysUntilExpiry = Math.ceil((expiryDate - date) / (1000 * 60 * 60 * 24));
+        if (daysUntilExpiry <= 7) {
+          // Significant discount for items expiring within a week
+          priceAdjustment -= 0.3; // 30% discount
+        } else if (daysUntilExpiry <= 14) {
+          // Moderate discount for items expiring within two weeks
+          priceAdjustment -= 0.15; // 15% discount
+        } else if (daysUntilExpiry <= 30) {
+          // Small discount for items expiring within a month
+          priceAdjustment -= 0.05; // 5% discount
+        }
+      }
+      
+      // Factor 2: Stock level urgency
+      const stockPercentage = stock / maxStock;
+      if (stockPercentage <= 0.1) {
+        // Low stock - increase price slightly
+        priceAdjustment += 0.05; // 5% increase
+      } else if (stockPercentage >= 0.8) {
+        // High stock - decrease price to clear inventory
+        priceAdjustment -= 0.1; // 10% decrease
+      }
+      
+      // Factor 3: Day of week effect (weekend vs weekday)
+      const dayOfWeek = date.getDay();
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        // Weekend - slight increase in demand, small price increase
+        priceAdjustment += 0.02; // 2% increase
+      }
+      
+      // Factor 4: Random market fluctuations
+      const marketFluctuation = (Math.random() - 0.5) * 0.05; // ±2.5% random fluctuation
+      priceAdjustment += marketFluctuation;
+      
+      // Apply price adjustment
+      price = Math.max(pricingItem.cost * 1.1, basePrice * (1 + priceAdjustment)); // Ensure minimum 10% margin
+      price = Math.round(price * 100) / 100; // Round to 2 decimal places
+      
+      // Calculate demand based on price and other factors
+      let demand = pricingItem.demand || 50;
+      if (price < basePrice) {
+        demand = Math.min(200, demand * 1.5); // Higher demand for lower prices
+      } else if (price > basePrice * 1.1) {
+        demand = Math.max(10, demand * 0.7); // Lower demand for higher prices
+      }
+      
+      // Add some daily variation to demand
+      demand = Math.round(demand * (0.8 + Math.random() * 0.4)); // ±20% daily variation
+      
+      timeSeriesData.push({
+        date: date.toISOString().split('T')[0],
+        day: day + 1,
+        price: price,
+        stock: stock,
+        demand: demand,
+        revenue: price * Math.min(stock, demand),
+        priceChange: ((price - basePrice) / basePrice * 100).toFixed(1) + '%',
+        daysUntilExpiry: expiryDate ? Math.ceil((expiryDate - date) / (1000 * 60 * 60 * 24)) : null,
+        stockPercentage: ((stock / maxStock) * 100).toFixed(1) + '%',
+        factors: {
+          expiryUrgency: isPerishable && expiryDate ? Math.max(0, 30 - Math.ceil((expiryDate - date) / (1000 * 60 * 60 * 24))) : 0,
+          stockUrgency: stockPercentage <= 0.2 ? 'High' : stockPercentage <= 0.5 ? 'Medium' : 'Low',
+          marketTrend: marketFluctuation > 0 ? 'Up' : 'Down'
+        }
+      });
+    }
+
+    res.json({
+      product: {
+        id: productId,
+        name: pricingItem.name,
+        sku: pricingItem.sku,
+        category: pricingItem.category,
+        supplier: pricingItem.supplierName
+      },
+      basePrice: basePrice,
+      currentStock: baseStock,
+      maxStock: maxStock,
+      isPerishable: isPerishable,
+      expiryDate: expiryDate,
+      timeSeriesData: timeSeriesData,
+      summary: {
+        minPrice: Math.min(...timeSeriesData.map(d => d.price)),
+        maxPrice: Math.max(...timeSeriesData.map(d => d.price)),
+        avgPrice: Math.round(timeSeriesData.reduce((sum, d) => sum + d.price, 0) / timeSeriesData.length * 100) / 100,
+        totalRevenue: Math.round(timeSeriesData.reduce((sum, d) => sum + d.revenue, 0) * 100) / 100,
+        priceVolatility: Math.round((Math.max(...timeSeriesData.map(d => d.price)) - Math.min(...timeSeriesData.map(d => d.price))) / basePrice * 100 * 10) / 10
+      }
+    });
+  } catch (err) { 
+    console.error('Error in getProductPricingTimeSeries:', err);
+    next(err); 
   }
 }; 

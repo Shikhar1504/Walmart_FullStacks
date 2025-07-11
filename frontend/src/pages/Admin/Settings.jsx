@@ -1,6 +1,6 @@
 import React from 'react';
-import Card, { CardContent, CardHeader, CardTitle } from '../components/UI/Card';
-import Button from '../components/UI/Button';
+import Card, { CardContent, CardHeader, CardTitle } from '../../components/UI/Card';
+import Button from '../../components/UI/Button';
 
 const Settings = () => {
   return (

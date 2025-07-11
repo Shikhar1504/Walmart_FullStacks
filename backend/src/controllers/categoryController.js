@@ -4,7 +4,65 @@ const Category = require('../models/Category');
 exports.getCategories = async (req, res, next) => {
   try {
     const categories = await Category.find();
-    res.json(categories);
+    
+    // If no categories found, provide mock data
+    if (categories.length === 0) {
+      const mockCategories = [
+        {
+          _id: 'mock-category-1',
+          name: 'Electronics',
+          description: 'Electronic devices and gadgets',
+          createdAt: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        },
+        {
+          _id: 'mock-category-2',
+          name: 'Accessories',
+          description: 'Various accessories and add-ons',
+          createdAt: new Date(Date.now() - 300 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        },
+        {
+          _id: 'mock-category-3',
+          name: 'Clothing',
+          description: 'Apparel and fashion items',
+          createdAt: new Date(Date.now() - 250 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        },
+        {
+          _id: 'mock-category-4',
+          name: 'Home & Garden',
+          description: 'Home and garden products',
+          createdAt: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        },
+        {
+          _id: 'mock-category-5',
+          name: 'Sports',
+          description: 'Sports equipment and accessories',
+          createdAt: new Date(Date.now() - 150 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        },
+        {
+          _id: 'mock-category-6',
+          name: 'Books',
+          description: 'Books and educational materials',
+          createdAt: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        },
+        {
+          _id: 'mock-category-7',
+          name: 'Toys',
+          description: 'Toys and games',
+          createdAt: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        }
+      ];
+      
+      res.json(mockCategories);
+    } else {
+      res.json(categories);
+    }
   } catch (err) { next(err); }
 };
 

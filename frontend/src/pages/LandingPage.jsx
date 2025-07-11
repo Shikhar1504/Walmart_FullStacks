@@ -12,10 +12,8 @@ export default function LandingPage() {
   useEffect(() => {
     if (!loading) {
       if (user) {
-        // User is logged in, redirect to e-commerce home
         navigate("/", { replace: true })
       } else {
-        // User is not logged in, redirect to login
         navigate("/login", { replace: true })
       }
     }

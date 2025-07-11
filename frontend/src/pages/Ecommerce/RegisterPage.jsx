@@ -3,14 +3,13 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
-import { useToast } from "../../contexts/ToastContext"
+import { toast } from "sonner"
 import Button from "../../components/UI/Button"
 import { TrendingUp, Mail, Lock, User } from "lucide-react"
 
 export default function RegisterPage() {
   const { register } = useAuth()
   const navigate = useNavigate()
-  const { toast } = useToast()
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -49,11 +48,11 @@ export default function RegisterPage() {
     setLoading(false)
     
     if (result.success) {
-      toast.success("Account created successfully!", "Registration Successful")
+      toast.success("Account created successfully!")
       navigate("/")
     } else {
       setError(result.error || "Registration failed.")
-      toast.error(result.error, "Registration Failed")
+      toast.error(result.error || "Registration failed")
     }
   }
 
@@ -67,7 +66,7 @@ export default function RegisterPage() {
             </div>
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">Create Account</h2>
-          <p className="mt-2 text-sm text-gray-600">Join our Supply Chain Analytics platform</p>
+          <p className="mt-2 text-sm text-gray-600">Join our E-commerce platform</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

@@ -5,12 +5,11 @@ import { Link, useNavigate } from "react-router-dom"
 import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag } from "lucide-react"
 import { useCart } from "../../contexts/CartContext"
 import { useAuth } from "../../contexts/AuthContext"
-import { useToast } from "../../contexts/ToastContext"
+import { toast } from "sonner"
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, getCartTotal, getCartSubtotal, getDiscountTotal, clearCart, createOrder } = useCart()
   const { user } = useAuth()
-  const { toast } = useToast()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
 

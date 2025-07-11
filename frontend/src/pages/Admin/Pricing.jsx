@@ -1,11 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Card, { CardHeader, CardTitle, CardDescription, CardContent } from "../components/UI/Card"
-import Button from "../components/UI/Button"
-import DynamicPricingModule from "../components/DynamicPricingModule"
+import Card, { CardHeader, CardTitle, CardDescription, CardContent } from "../../components/UI/Card"
+import Button from "../../components/UI/Button"
+
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts"
-import { Edit, TrendingUp, DollarSign, AlertCircle, Clock, Thermometer, Zap, Target, Calendar, Brain, Settings, RefreshCw, Calculator } from "lucide-react"
+import { Edit, TrendingUp, DollarSign, AlertCircle, Clock, Thermometer, Zap, Target, Calendar, Brain, Settings, RefreshCw } from "lucide-react"
 
 const Pricing = () => {
   const [activeTab, setActiveTab] = useState("perishables")
@@ -336,8 +336,8 @@ const Pricing = () => {
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-gray-900">${product.currentPrice}</p>
-              <p className={`text-sm font-medium ${product.priceChange.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                {product.priceChange}
+              <p className={`text-sm font-medium ${(product.priceChange || '').startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                {product.priceChange || '0%'}
               </p>
             </div>
           </div>
@@ -380,7 +380,7 @@ const Pricing = () => {
               product.status === 'optimal' ? 'bg-green-100 text-green-800' :
               'bg-gray-100 text-gray-800'
             }`}>
-              {product.status.replace('_', ' ')}
+              {(product.status || '').replace('_', ' ')}
             </span>
             <Button 
               variant="outline" 
@@ -444,17 +444,7 @@ const Pricing = () => {
           <DollarSign className="w-4 h-4 inline mr-2" />
           General Products
         </button>
-        <button
-          onClick={() => handleTabChange("dynamic")}
-          className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-            activeTab === "dynamic"
-              ? "bg-white text-gray-900 shadow-sm"
-              : "text-gray-600 hover:text-gray-900"
-          }`}
-        >
-          <Calculator className="w-4 h-4 inline mr-2" />
-          Dynamic Rules
-        </button>
+
       </div>
 
       {activeTab === "perishables" && (
@@ -855,10 +845,10 @@ const Pricing = () => {
                         </div>
                         <span
                           className={`text-xs px-2 py-1 rounded-full ${
-                            product.priceChange.startsWith("+") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                            (product.priceChange || '').startsWith("+") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {product.priceChange}
+                          {product.priceChange || '0%'}
                         </span>
                       </div>
                     </div>
@@ -983,9 +973,7 @@ const Pricing = () => {
         </>
       )}
 
-      {activeTab === "dynamic" && (
-        <DynamicPricingModule />
-      )}
+
 
       {/* Price Update Modal */}
       {showPriceModal && (

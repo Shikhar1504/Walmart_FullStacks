@@ -2,16 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { Package, User, ShoppingBag, Calendar, DollarSign, Eye } from "lucide-react"
-import { orderService } from "../services/orderService"
-import { useAuth } from "../contexts/AuthContext"
-import { useToast } from "../contexts/ToastContext"
+import { orderService } from "../../services/orderService"
+import { useAuth } from "../../contexts/AuthContext"
+import { toast } from "sonner"
 
 export default function OrderManagement() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [updatingOrder, setUpdatingOrder] = useState(null)
   const { user } = useAuth()
-  const { toast } = useToast()
 
   useEffect(() => {
     loadOrders()

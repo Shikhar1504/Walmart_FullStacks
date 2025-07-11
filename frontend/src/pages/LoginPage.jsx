@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
-import { useToast } from "../contexts/ToastContext"
+import { toast } from "sonner"
 import Button from "../components/UI/Button"
 import { TrendingUp, Mail, Lock } from "lucide-react"
 
@@ -14,7 +14,6 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" })
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const { toast } = useToast()
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -27,18 +26,17 @@ export default function LoginPage() {
     const result = await login(form.email, form.password)
     setLoading(false)
     if (result.success) {
-      // Redirect based on role
+      
       if (result.user?.role === "admin") {
         navigate("/admin/dashboard")
-        toast.success("Welcome Admin!", "Login Successful")
+        toast.success("Welcome Admin!")
       } else {
-        // Regular users go to e-commerce home page
         navigate("/")
-        toast.success("Welcome back!", "Login Successful")
+        toast.success("Welcome back!")
       }
     } else {
       setError(result.error || "Invalid credentials.")
-      toast.error(result.error, "Login Failed")
+      toast.error(result.error || "Login failed")
     }
   }
 

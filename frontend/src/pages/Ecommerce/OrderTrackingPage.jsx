@@ -4,13 +4,12 @@ import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { Package, CheckCircle, Clock, Truck, ArrowLeft, Calendar, MapPin, Phone, Mail } from "lucide-react"
 import { orderService } from "../../services/orderService"
-import { useToast } from "../../contexts/ToastContext"
+import { toast } from "sonner"
 
 export default function OrderTrackingPage() {
   const { trackingNumber } = useParams()
   const [order, setOrder] = useState(null)
   const [loading, setLoading] = useState(true)
-  const { toast } = useToast()
 
   console.log('🔍 OrderTrackingPage loaded with trackingNumber:', trackingNumber)
 

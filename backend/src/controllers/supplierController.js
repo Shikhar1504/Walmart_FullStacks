@@ -4,7 +4,116 @@ const Supplier = require('../models/Supplier');
 exports.getSuppliers = async (req, res, next) => {
   try {
     const suppliers = await Supplier.find();
-    res.json(suppliers);
+    
+    // If no suppliers found, provide mock data
+    if (suppliers.length === 0) {
+      const mockSuppliers = [
+        {
+          _id: 'mock-supplier-1',
+          name: 'Tech Supplies Inc',
+          contact: 'Mike Johnson',
+          email: 'mike@techsupplies.com',
+          phone: '+1-555-0101',
+          status: 'active',
+          rating: 4.5,
+          lastOrder: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+          performance: {
+            onTimeDelivery: 98,
+            qualityFailures: 1.2,
+            contractCompliance: 95,
+            reliabilityScore: 95,
+            totalDeliveries: 45,
+            failedInspections: 1,
+            alerts: []
+          },
+          createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+        },
+        {
+          _id: 'mock-supplier-2',
+          name: 'Gadget World',
+          contact: 'Sarah Chen',
+          email: 'sarah@gadgetworld.com',
+          phone: '+1-555-0202',
+          status: 'active',
+          rating: 4.2,
+          lastOrder: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          performance: {
+            onTimeDelivery: 92,
+            qualityFailures: 3.1,
+            contractCompliance: 88,
+            reliabilityScore: 87,
+            totalDeliveries: 38,
+            failedInspections: 2,
+            alerts: ['Quality issue with recent batch']
+          },
+          createdAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000)
+        },
+        {
+          _id: 'mock-supplier-3',
+          name: 'Office Supplies Co',
+          contact: 'David Wilson',
+          email: 'david@officesupplies.com',
+          phone: '+1-555-0303',
+          status: 'active',
+          rating: 4.7,
+          lastOrder: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+          performance: {
+            onTimeDelivery: 95,
+            qualityFailures: 0.8,
+            contractCompliance: 94,
+            reliabilityScore: 92,
+            totalDeliveries: 52,
+            failedInspections: 0,
+            alerts: []
+          },
+          createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000)
+        },
+        {
+          _id: 'mock-supplier-4',
+          name: 'Cable Solutions',
+          contact: 'Lisa Brown',
+          email: 'lisa@cablesolutions.com',
+          phone: '+1-555-0404',
+          status: 'active',
+          rating: 4.3,
+          lastOrder: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+          performance: {
+            onTimeDelivery: 89,
+            qualityFailures: 2.5,
+            contractCompliance: 91,
+            reliabilityScore: 89,
+            totalDeliveries: 41,
+            failedInspections: 1,
+            alerts: ['Late delivery last week']
+          },
+          createdAt: new Date(Date.now() - 150 * 24 * 60 * 60 * 1000)
+        },
+        {
+          _id: 'mock-supplier-5',
+          name: 'Mobile Accessories Ltd',
+          contact: 'Alex Rodriguez',
+          email: 'alex@mobileaccessories.com',
+          phone: '+1-555-0505',
+          status: 'active',
+          rating: 4.1,
+          lastOrder: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          performance: {
+            onTimeDelivery: 85,
+            qualityFailures: 4.2,
+            contractCompliance: 87,
+            reliabilityScore: 84,
+            totalDeliveries: 29,
+            failedInspections: 3,
+            alerts: ['Multiple quality issues', 'Contract compliance warning']
+          },
+          createdAt: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000)
+        }
+      ];
+      
+      res.json(mockSuppliers);
+    } else {
+      res.json(suppliers);
+    }
   } catch (err) { next(err); }
 };
 

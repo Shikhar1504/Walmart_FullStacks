@@ -7,13 +7,12 @@ import { useState, useEffect } from "react"
 import { Package, Clock, Truck, CheckCircle, Eye } from "lucide-react"
 import { clearLocalStorageOrders } from "../../utils/clearOrders"
 import { orderService } from "../../services/orderService"
-import { useToast } from "../../contexts/ToastContext"
+import { toast } from "sonner"
 import OrderDetailModal from "../../components/UI/OrderDetailModal"
 
 export default function UserProfilePage() {
   const { user } = useAuth()
   const { clearOrders } = useCart()
-  const { toast } = useToast()
   const [tab, setTab] = useState("account")
   const [ordersCleared, setOrdersCleared] = useState(false)
   const [orders, setOrders] = useState([])

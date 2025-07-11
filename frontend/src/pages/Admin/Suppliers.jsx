@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Card, { CardContent, CardHeader, CardTitle } from '../components/UI/Card';
-import Button from '../components/UI/Button';
-import SupplierDashboard from '../components/SupplierDashboard';
+import Card, { CardContent, CardHeader, CardTitle } from '../../components/UI/Card';
+import Button from '../../components/UI/Button';
+import SupplierDashboard from '../../components/SupplierDashboard';
 import { Award, Calculator } from 'lucide-react';
 
 const Suppliers = () => {

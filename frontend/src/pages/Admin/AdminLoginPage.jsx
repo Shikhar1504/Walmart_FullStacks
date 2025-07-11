@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "../contexts/AuthContext"
-import { useToast } from "../contexts/ToastContext"
-import Button from "../components/UI/Button"
+import { useAuth } from "../../contexts/AuthContext"
+import { toast } from "sonner"
+import Button from "../../components/UI/Button"
 import { TrendingUp, Mail, Lock, Shield } from "lucide-react"
 
 export default function AdminLoginPage() {
@@ -13,7 +13,6 @@ export default function AdminLoginPage() {
   const [form, setForm] = useState({ email: "", password: "" })
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const { toast } = useToast()
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -28,14 +27,14 @@ export default function AdminLoginPage() {
     if (result.success) {
       if (result.user?.role === "admin") {
         navigate("/admin/dashboard")
-        toast.success("Welcome Admin!", "Login Successful")
+        toast.success("Welcome Admin!")
       } else {
         setError("Access denied. Admin credentials required.")
-        toast.error("Access denied. Admin credentials required.", "Login Failed")
+        toast.error("Access denied. Admin credentials required.")
       }
     } else {
       setError(result.error || "Invalid credentials.")
-      toast.error(result.error, "Login Failed")
+      toast.error(result.error || "Login failed")
     }
   }
 

@@ -225,56 +225,55 @@ db.once('open', async () => {
     const allItems = [...perishableItems, ...nonPerishableItems];
 
     // Create pricing items with supplier information
-    for (let i = 0; i < allItems.length; i++) {
-      const item = allItems[i];
-      const product = products[i % products.length]; // Cycle through products
-      const supplier = suppliers[i % suppliers.length]; // Cycle through suppliers
-
-      const pricingItem = {
-        productId: product._id,
-        supplierId: supplier._id,
-        supplierName: supplier.name,
-        name: item.name,
-        sku: item.sku,
-        category: item.category,
-        currentPrice: item.currentPrice,
-        originalPrice: item.originalPrice,
-        cost: item.cost,
-        stock: item.stock,
-        maxStock: item.maxStock,
-        minStockLevel: item.minStockLevel,
-        expirationDate: item.expirationDate,
-        isPerishable: item.isPerishable,
-        demand: item.demand,
-        clearanceRate: item.clearanceRate,
-        wasteReduction: item.wasteReduction,
-        mlScore: item.mlScore,
-        status: item.status,
-        priceFactors: {
-          expirationUrgency: Math.round((0.7 + Math.random() * 0.3) * 100),
-          stockLevel: Math.round((0.3 + Math.random() * 0.4) * 100),
-          timeOfDay: Math.round((0.6 + Math.random() * 0.3) * 100),
-          demandForecast: Math.round((0.8 + Math.random() * 0.2) * 100),
-          competitorPrice: Math.round((0.5 + Math.random() * 0.4) * 100),
-          seasonality: Math.round((0.4 + Math.random() * 0.5) * 100),
-          marketTrend: Math.round((0.6 + Math.random() * 0.3) * 100)
-        },
-        optimization: {
-          wasteReduction: item.wasteReduction,
+    for (const supplier of suppliers) {
+      for (const product of products) {
+        // Pick a random item template for variety
+        const item = allItems[Math.floor(Math.random() * allItems.length)];
+        const pricingItem = {
+          productId: product._id,
+          supplierId: supplier._id,
+          supplierName: supplier.name,
+          name: product.name,
+          sku: product.sku,
+          category: product.category,
+          currentPrice: item.currentPrice,
+          originalPrice: item.originalPrice,
+          cost: item.cost,
+          stock: item.stock,
+          maxStock: item.maxStock,
+          minStockLevel: item.minStockLevel,
+          expirationDate: item.expirationDate,
+          isPerishable: item.isPerishable,
+          demand: item.demand,
           clearanceRate: item.clearanceRate,
-          revenueSaved: Math.round((item.currentPrice - item.cost) * item.demand * 0.1),
-          lastOptimization: new Date()
-        },
-        history: [
-          {
-            price: item.currentPrice,
-            reason: 'Initial creation',
-            mlScore: item.mlScore
-          }
-        ]
-      };
-
-      pricingItems.push(pricingItem);
+          wasteReduction: item.wasteReduction,
+          mlScore: item.mlScore,
+          status: item.status,
+          priceFactors: {
+            expirationUrgency: Math.round((0.7 + Math.random() * 0.3) * 100),
+            stockLevel: Math.round((0.3 + Math.random() * 0.4) * 100),
+            timeOfDay: Math.round((0.6 + Math.random() * 0.3) * 100),
+            demandForecast: Math.round((0.8 + Math.random() * 0.2) * 100),
+            competitorPrice: Math.round((0.5 + Math.random() * 0.4) * 100),
+            seasonality: Math.round((0.4 + Math.random() * 0.5) * 100),
+            marketTrend: Math.round((0.6 + Math.random() * 0.3) * 100)
+          },
+          optimization: {
+            wasteReduction: item.wasteReduction,
+            clearanceRate: item.clearanceRate,
+            revenueSaved: Math.round((item.currentPrice - item.cost) * item.demand * 0.1),
+            lastOptimization: new Date()
+          },
+          history: [
+            {
+              price: item.currentPrice,
+              reason: 'Initial creation',
+              mlScore: item.mlScore
+            }
+          ]
+        };
+        pricingItems.push(pricingItem);
+      }
     }
 
     // Insert all pricing items

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Card, { CardHeader, CardTitle, CardDescription, CardContent } from "../components/UI/Card"
+import Card, { CardHeader, CardTitle, CardDescription, CardContent } from "../../components/UI/Card"
 import {
   AreaChart,
   Area,
@@ -19,13 +19,12 @@ import {
 import { DollarSign, Package, Users, AlertTriangle, ArrowUpRight, ArrowDownRight } from "lucide-react"
 
 export default function Dashboard() {
-  const [timeRange, setTimeRange] = useState("6m")
+
   const [dashboardData, setDashboardData] = useState({
     totalUsers: 0,
     totalOrders: 0,
     totalRevenue: 0,
     lowStockItems: 0,
-    outOfStockItems: 0,
     topSuppliers: 0
   })
   const [revenueData, setRevenueData] = useState({
@@ -48,21 +47,20 @@ export default function Dashboard() {
     }
   })
   const [loading, setLoading] = useState(true)
-  const [demandForecast, setDemandForecast] = useState([])
 
-  // Fetch dashboard data from backend
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true)
-        const [dashboardResponse, revenueResponse, historyResponse, categoryResponse, supplierResponse, alertsResponse, forecastResponse] = await Promise.all([
+        const [dashboardResponse, revenueResponse, historyResponse, categoryResponse, supplierResponse, alertsResponse] = await Promise.all([
           fetch('http://localhost:5000/api/analytics/dashboard', {
             credentials: 'include'
           }),
           fetch('http://localhost:5000/api/analytics/revenue', {
             credentials: 'include'
           }),
-          fetch(`http://localhost:5000/api/analytics/revenue-history?timeRange=${timeRange}`, {
+          fetch(`http://localhost:5000/api/analytics/revenue-history?timeRange=6m`, {
             credentials: 'include'
           }),
           fetch('http://localhost:5000/api/analytics/sales-by-category', {
@@ -74,9 +72,7 @@ export default function Dashboard() {
           fetch('http://localhost:5000/api/analytics/critical-alerts', {
             credentials: 'include'
           }),
-          fetch('http://localhost:5000/api/analytics/demand-forecast', {
-            credentials: 'include'
-          })
+
         ])
 
         if (dashboardResponse.ok) {
@@ -91,7 +87,10 @@ export default function Dashboard() {
 
         if (historyResponse.ok) {
           const historyData = await historyResponse.json()
+          console.log('Revenue History Data:', historyData)
           setRevenueHistory(historyData)
+        } else {
+          console.error('Failed to fetch revenue history:', historyResponse.status, historyResponse.statusText)
         }
 
         if (categoryResponse.ok) {
@@ -109,10 +108,7 @@ export default function Dashboard() {
           setCriticalAlerts(alertsData)
         }
 
-        if (forecastResponse.ok) {
-          const forecastData = await forecastResponse.json()
-          setDemandForecast(forecastData.forecast || [])
-        }
+
       } catch (error) {
         console.error('Error fetching dashboard data:', error)
       } finally {
@@ -121,54 +117,23 @@ export default function Dashboard() {
     }
 
     fetchDashboardData()
-  }, [timeRange])
+  }, [])
 
-  // Function to get KPI values based on time range and real data
-  const getKPIValues = (range) => {
+  // Function to get KPI values based on 6 months data
+  const getKPIValues = () => {
     // Use real data from backend for current metrics
     const currentRevenue = dashboardData.totalRevenue
     const currentOrders = dashboardData.totalOrders
     
-    switch (range) {
-      case "1m":
-        return {
-          revenue: `$${(currentRevenue / 1000).toFixed(0)}k`,
-          orders: currentOrders.toString(),
-          suppliers: dashboardData.topSuppliers.toString(),
-          alerts: criticalAlerts.summary.total.toString()
-        }
-      case "3m":
-        return {
-          revenue: `$${(currentRevenue / 1000).toFixed(0)}k`,
-          orders: currentOrders.toString(),
-          suppliers: dashboardData.topSuppliers.toString(),
-          alerts: criticalAlerts.summary.total.toString()
-        }
-      case "6m":
-        return {
-          revenue: `$${(currentRevenue / 1000).toFixed(0)}k`,
-          orders: currentOrders.toString(),
-          suppliers: dashboardData.topSuppliers.toString(),
-          alerts: criticalAlerts.summary.total.toString()
-        }
-      case "1y":
-        return {
-          revenue: `$${(currentRevenue / 1000).toFixed(0)}k`,
-          orders: currentOrders.toString(),
-          suppliers: dashboardData.topSuppliers.toString(),
-          alerts: criticalAlerts.summary.total.toString()
-        }
-      default:
-        return {
-          revenue: `$${(currentRevenue / 1000).toFixed(0)}k`,
-          orders: currentOrders.toString(),
-          suppliers: dashboardData.topSuppliers.toString(),
-          alerts: criticalAlerts.summary.total.toString()
-        }
+    return {
+      revenue: `$${(currentRevenue / 1000).toFixed(0)}k`,
+      orders: currentOrders.toString(),
+      suppliers: dashboardData.topSuppliers.toString(),
+      alerts: criticalAlerts.summary.total.toString()
     }
   }
 
-  const currentKPIs = getKPIValues(timeRange)
+  const currentKPIs = getKPIValues()
 
   const kpis = [
     {
@@ -221,19 +186,7 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your supply chain.</p>
         </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-500">Time Range:</span>
-          <select 
-            value={timeRange} 
-            onChange={(e) => setTimeRange(e.target.value)} 
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-          >
-            <option value="1m">Last Month</option>
-            <option value="3m">Last 3 Months</option>
-            <option value="6m">Last 6 Months</option>
-            <option value="1y">Last Year</option>
-          </select>
-        </div>
+
       </div>
 
       {/* KPI Cards */}
@@ -274,7 +227,7 @@ export default function Dashboard() {
             <CardTitle>
               Revenue & Profit Trends
               <span className="ml-2 text-sm font-normal text-gray-500">
-                ({timeRange === "1m" ? "Last Month" : timeRange === "3m" ? "Last 3 Months" : timeRange === "6m" ? "Last 6 Months" : "Last Year"})
+                (Last 6 Months)
               </span>
             </CardTitle>
             <CardDescription>Monthly revenue and profit over time</CardDescription>
@@ -433,78 +386,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       )}
-
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest updates and notifications</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">New order received</p>
-                <p className="text-sm text-gray-500">Order #1234 has been placed</p>
-              </div>
-              <span className="text-sm text-gray-500">2 min ago</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="h-2 w-2 bg-yellow-500 rounded-full"></div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">Low stock alert</p>
-                <p className="text-sm text-gray-500">Product XYZ is running low</p>
-              </div>
-              <span className="text-sm text-gray-500">15 min ago</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">Supplier update</p>
-                <p className="text-sm text-gray-500">Supplier ABC has updated their delivery schedule</p>
-              </div>
-              <span className="text-sm text-gray-500">1 hour ago</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Demand Forecast */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Demand Forecasting</CardTitle>
-          <CardDescription>AI-powered demand predictions with confidence intervals</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Predicted Demand</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Confidence Interval</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {demandForecast.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="px-4 py-4 text-center text-gray-400">No forecast data available.</td>
-                  </tr>
-                ) : (
-                  demandForecast.map((item, idx) => (
-                    <tr key={idx}>
-                      <td className="px-4 py-2 whitespace-nowrap font-medium text-gray-900">{item.product}</td>
-                      <td className="px-4 py-2 whitespace-nowrap">{item.demand}</td>
-                      <td className="px-4 py-2 whitespace-nowrap text-gray-500">{item.confidenceInterval ? `${item.confidenceInterval[0]} - ${item.confidenceInterval[1]}` : '±10%'}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

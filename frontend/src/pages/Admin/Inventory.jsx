@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Card, { CardContent, CardHeader, CardTitle } from '../components/UI/Card';
-import Button from '../components/UI/Button';
+import Card, { CardContent, CardHeader, CardTitle } from '../../components/UI/Card';
+import Button from '../../components/UI/Button';
 
 const Inventory = () => {
   const [inventory, setInventory] = useState([]);
