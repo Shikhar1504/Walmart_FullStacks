@@ -332,41 +332,11 @@ const Suppliers = () => {
             </Card>
           </div>
 
-          {/* Performance Analytics Overview */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Performance Analytics Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">On-Time Delivery Trends</h3>
-                  <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-500">Chart: Delivery Performance</span>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Quality Metrics</h3>
-                  <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-500">Chart: Quality Trends</span>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Compliance Tracking</h3>
-                  <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <span className="text-gray-500">Chart: Compliance Status</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Enhanced Suppliers Table */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Supplier Performance Monitoring</CardTitle>
-                <Button>Add New Supplier</Button>
               </div>
             </CardHeader>
             <CardContent>
@@ -482,7 +452,6 @@ const Suppliers = () => {
                                   >
                                     Analytics
                                   </Button>
-                                  <Button variant="outline" size="sm">Edit</Button>
                                 </div>
                               </td>
                             </tr>

@@ -13,7 +13,6 @@ import Analytics from "./pages/Admin/Analytics"
 import Pricing from "./pages/Admin/Pricing"
 import Suppliers from "./pages/Admin/Suppliers"
 import Inventory from "./pages/Admin/Inventory"
-import Settings from "./pages/Admin/Settings"
 import NotFound from "./pages/NotFound"
 import OrderManagement from "./pages/Admin/OrderManagement"
 
@@ -57,7 +56,6 @@ function App() {
               <Route path="pricing" element={<Pricing />} />
               <Route path="suppliers" element={<Suppliers />} />
               <Route path="inventory" element={<Inventory />} />
-              <Route path="settings" element={<Settings />} />
               <Route path="orders" element={<OrderManagement />} />
             </Route>
 

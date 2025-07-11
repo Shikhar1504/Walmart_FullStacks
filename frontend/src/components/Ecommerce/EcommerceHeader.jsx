@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { Search, ShoppingCart, User, Menu, X, ChevronDown, Settings } from "lucide-react"
+import { Search, ShoppingCart, User, Menu, X, ChevronDown } from "lucide-react"
 import { useAuth } from "../../contexts/AuthContext"
 import { useCart } from "../../contexts/CartContext"
 import { productService } from "../../services/productService"
@@ -161,28 +161,6 @@ export default function EcommerceHeader({ onSearchToggle }) {
                 </span>
               )}
             </Link>
-
-            {/* Admin Dashboard - Only show for admin users */}
-            {user?.role === "admin" && (
-              <Link
-                to="/admin"
-                className="p-2 rounded-md hover:bg-gray-100 transition-colors"
-                title="Admin Dashboard"
-              >
-                <Settings className="w-6 h-6 text-gray-600" />
-              </Link>
-            )}
-            
-            {/* Admin Access Link - Show for non-admin users */}
-            {user && user.role !== "admin" && (
-              <Link
-                to="/admin/login"
-                className="p-2 rounded-md hover:bg-gray-100 transition-colors"
-                title="Admin Access"
-              >
-                <Settings className="w-6 h-6 text-gray-400" />
-              </Link>
-            )}
 
             {/* Mobile menu button */}
             <button

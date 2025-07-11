@@ -21,7 +21,6 @@ const navigation = [
   { name: "Suppliers", href: "suppliers", icon: Users },
   { name: "Inventory", href: "inventory", icon: Package },
   { name: "Order Management", href: "orders", icon: Truck },
-  { name: "Settings", href: "settings", icon: Settings },
 ]
 
 export default function Sidebar({ isOpen, onToggle }) {

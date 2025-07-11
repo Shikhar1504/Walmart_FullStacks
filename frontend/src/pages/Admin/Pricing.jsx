@@ -296,8 +296,10 @@ const Pricing = () => {
         })
       )
       await Promise.all(optimizationPromises)
-      // Refresh data after optimization
-      window.location.reload()
+      // Fetch updated analytics after optimization
+      await fetchPricingAnalytics()
+      // Optionally, refresh pricing items as well if needed
+      // await fetchPricingItems()
     } catch (error) {
       console.error('Error starting optimization:', error)
     } finally {
@@ -409,10 +411,7 @@ const Pricing = () => {
           <p className="text-gray-600 mt-1">ML-powered pricing optimization for perishables and general products</p>
         </div>
         <div className="flex items-center space-x-3">
-          <Button variant="outline" onClick={() => setShowMlSettingsModal(true)}>
-            <Settings className="w-4 h-4 mr-2" />
-            ML Settings
-          </Button>
+          {/* Removed ML Settings button as requested */}
           <Button onClick={startOptimization} disabled={isOptimizing}>
             <RefreshCw className={`w-4 h-4 mr-2 ${isOptimizing ? 'animate-spin' : ''}`} />
             {isOptimizing ? 'Optimizing...' : 'Run Optimization'}

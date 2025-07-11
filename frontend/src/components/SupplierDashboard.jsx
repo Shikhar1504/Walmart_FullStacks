@@ -468,9 +468,7 @@ const SupplierDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-900">Supplier Dashboard</h1>
           <p className="text-gray-600">Manage and monitor supplier relationships and pricing</p>
         </div>
-        <Button onClick={() => setShowPricingDetails(!showPricingDetails)}>
-          {showPricingDetails ? 'Hide' : 'Show'} Pricing Details
-        </Button>
+        {/* Removed Show/Hide Pricing Details button as requested */}
       </div>
 
       {/* Supplier Overview Cards */}
@@ -939,66 +937,7 @@ const SupplierDashboard = () => {
                     </Card>
                   )}
 
-                  {/* Supplier Products */}
-                  {(() => {
-                    const supplierPricingItems = pricingBySupplier[selectedSupplier._id] || [];
-                    return supplierPricingItems.length > 0 ? (
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center">
-                            <Brain className="w-5 h-5 mr-2" />
-                            Supplier Products ({supplierPricingItems.length})
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-3 max-h-64 overflow-y-auto">
-                            {supplierPricingItems.map((item) => (
-                              <div key={item._id} className="p-3 border rounded-lg hover:bg-gray-50">
-                                <div className="flex justify-between items-start">
-                                  <div>
-                                    <h4 className="font-medium text-gray-900">{item.name}</h4>
-                                    <p className="text-sm text-gray-500">{item.sku} • {item.category}</p>
-                                  </div>
-                                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
-                                    {item.status.replace('_', ' ')}
-                                  </span>
-                                </div>
-                                <div className="grid grid-cols-3 gap-2 mt-2">
-                                  <div>
-                                    <p className="text-xs text-gray-600">Price</p>
-                                    <p className="font-semibold">${item.currentPrice}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-xs text-gray-600">Stock</p>
-                                    <p className="font-semibold">{item.stock}/{item.maxStock}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-xs text-gray-600">ML Score</p>
-                                    <p className="font-semibold flex items-center">
-                                      <Brain className="w-3 h-3 mr-1" />
-                                      {item.mlScore}%
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ) : (
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center">
-                            <Brain className="w-5 h-5 mr-2" />
-                            Supplier Products
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-gray-500 text-center py-4">No products found for this supplier</p>
-                        </CardContent>
-                      </Card>
-                    );
-                  })()}
+                  {/* Removed Supplier Products section as requested */}
                 </div>
               </div>
 

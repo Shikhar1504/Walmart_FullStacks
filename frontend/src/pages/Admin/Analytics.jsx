@@ -405,9 +405,7 @@ export default function Analytics() {
                       </option>
                     ))}
                   </select>
-                  {products.length === 0 && (
-                    <div className="text-red-500 text-sm mt-2">No products with pricing for this supplier. Showing mock products.</div>
-                  )}
+                  {/* If no products, show fallback product name instead of warning */}
                 </div>
               </div>
             </CardContent>
