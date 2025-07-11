@@ -38,11 +38,13 @@ full_wallmart/
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - **Node.js** (v16 or higher)
 - **MongoDB** (local or cloud instance)
 - **npm** or **yarn**
 
 ### Backend Setup
+
 ```bash
 cd backend
 npm install
@@ -52,6 +54,7 @@ npm run dev           # Start development server
 ```
 
 ### Frontend Setup
+
 ```bash
 cd frontend
 npm install
@@ -61,6 +64,7 @@ npm run dev           # Start development server
 ## 🎯 Core Features
 
 ### 🔧 Admin Dashboard Features
+
 - **📊 Dashboard**: Real-time overview with key metrics, KPIs, and performance indicators
 - **📈 Analytics**: Comprehensive business analytics with interactive charts and data visualization
 - **📦 Inventory Management**: Complete product and stock management with reorder alerts
@@ -71,6 +75,7 @@ npm run dev           # Start development server
 - **⚙️ Settings**: System configuration and user preferences
 
 ### 🛒 E-commerce Customer Features
+
 - **🏠 Home Page**: Featured products, promotions, and personalized recommendations
 - **🛍️ Product Catalog**: Advanced product browsing with search, filters, and categories
 - **📱 Product Details**: Comprehensive product information, reviews, and related items
@@ -83,6 +88,7 @@ npm run dev           # Start development server
 ## 🔧 Technology Stack
 
 ### Backend Technologies
+
 - **Node.js** with Express.js framework
 - **MongoDB** with Mongoose ODM for data persistence
 - **JWT** authentication with access and refresh tokens
@@ -96,6 +102,7 @@ npm run dev           # Start development server
 - **cookie-parser** for secure cookie handling
 
 ### Frontend Technologies
+
 - **React 18** with modern hooks and concurrent features
 - **Vite** for fast development and optimized builds
 - **React Router** for client-side navigation
@@ -110,6 +117,7 @@ npm run dev           # Start development server
 ## 🔐 Security & Authentication
 
 ### Authentication System
+
 - **JWT-based authentication** with short-lived access tokens (15 minutes)
 - **Refresh token mechanism** with 7-day expiry for seamless user experience
 - **HTTP-only cookies** for secure token storage
@@ -118,6 +126,7 @@ npm run dev           # Start development server
 - **Input validation and sanitization** for all user inputs
 
 ### Security Features
+
 - **Password hashing** with bcryptjs
 - **CORS configuration** for secure cross-origin requests
 - **Security headers** with Helmet.js
@@ -125,6 +134,7 @@ npm run dev           # Start development server
 - **Error handling** without exposing sensitive information
 
 ### Default Admin Credentials
+
 - **Email**: `admin@supply.com`
 - **Password**: `admin123`
 
@@ -133,6 +143,7 @@ npm run dev           # Start development server
 ### RESTful API Endpoints
 
 #### Authentication & Users
+
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User authentication
 - `POST /api/auth/logout` - User logout
@@ -142,6 +153,7 @@ npm run dev           # Start development server
 - `PUT /api/users/:id` - Update user (Admin)
 
 #### Product Management
+
 - `GET /api/products` - Get all products
 - `POST /api/products` - Create new product (Admin)
 - `GET /api/products/:id` - Get product by ID
@@ -150,6 +162,7 @@ npm run dev           # Start development server
 - `GET /api/categories` - Get product categories
 
 #### Order Management
+
 - `GET /api/orders` - Get all orders
 - `POST /api/orders` - Create new order
 - `GET /api/orders/:id` - Get order by ID
@@ -157,11 +170,13 @@ npm run dev           # Start development server
 - `GET /api/orders/tracking/:trackingNumber` - Track order (Public)
 
 #### Inventory Management
+
 - `GET /api/inventory` - Get inventory data
 - `POST /api/inventory` - Update inventory (Admin)
 - `GET /api/inventory/:id` - Get inventory by ID
 
 #### Supplier Management
+
 - `GET /api/suppliers` - Get all suppliers (Admin)
 - `POST /api/suppliers` - Create new supplier (Admin)
 - `GET /api/suppliers/:id` - Get supplier by ID (Admin)
@@ -169,11 +184,13 @@ npm run dev           # Start development server
 - `DELETE /api/suppliers/:id` - Delete supplier (Admin)
 
 #### Analytics & Reporting
+
 - `GET /api/analytics/dashboard` - Dashboard metrics (Admin)
 - `GET /api/analytics/sales` - Sales analytics (Admin)
 - `GET /api/analytics/inventory` - Inventory analytics (Admin)
 
 #### Pricing Management
+
 - `GET /api/pricing` - Get pricing data
 - `POST /api/pricing` - Update pricing (Admin)
 
@@ -182,6 +199,7 @@ npm run dev           # Start development server
 ### Environment Variables
 
 #### Backend (.env)
+
 ```env
 MONGODB_URI=mongodb://localhost:27017/walmart_supply_chain
 JWT_SECRET=your_super_secret_jwt_key_here
@@ -192,6 +210,7 @@ CORS_ORIGIN=http://localhost:5173
 ```
 
 #### Frontend (.env)
+
 ```env
 VITE_API_URL=http://localhost:5000/api
 VITE_APP_NAME=Walmart Supply Chain
@@ -200,6 +219,7 @@ VITE_APP_NAME=Walmart Supply Chain
 ### Available Scripts
 
 #### Backend
+
 ```bash
 npm run dev      # Start development server with nodemon
 npm start        # Start production server
@@ -207,6 +227,7 @@ npm run seed     # Seed database with initial data
 ```
 
 #### Frontend
+
 ```bash
 npm run dev      # Start development server
 npm run build    # Build for production
@@ -217,6 +238,7 @@ npm run lint     # Run ESLint
 ## 🚀 Deployment
 
 ### Backend Deployment
+
 1. Set `NODE_ENV=production`
 2. Configure production MongoDB URI
 3. Set secure JWT secrets
@@ -224,12 +246,14 @@ npm run lint     # Run ESLint
 5. Deploy to your preferred hosting service (Heroku, AWS, DigitalOcean, etc.)
 
 ### Frontend Deployment
+
 1. Run `npm run build`
 2. Deploy the `dist` folder to your hosting service
 3. Configure environment variables for production API endpoints
 4. Set up CDN for static assets
 
 ### Recommended Hosting
+
 - **Backend**: Heroku, AWS EC2, DigitalOcean Droplet
 - **Frontend**: Vercel, Netlify, AWS S3 + CloudFront
 - **Database**: MongoDB Atlas, AWS DocumentDB
@@ -237,6 +261,7 @@ npm run lint     # Run ESLint
 ## 📈 Performance & Scalability
 
 ### Backend Optimization
+
 - **MongoDB connection pooling** for database efficiency
 - **Rate limiting** to prevent API abuse
 - **Compression middleware** for response optimization
@@ -244,6 +269,7 @@ npm run lint     # Run ESLint
 - **Error handling** with proper logging
 
 ### Frontend Optimization
+
 - **Code splitting** with React Router
 - **Lazy loading** for heavy components
 - **Tree shaking** for unused code elimination
@@ -253,12 +279,14 @@ npm run lint     # Run ESLint
 ## 🧪 Testing Strategy
 
 ### Backend Testing
+
 - **Unit tests** for controllers and utilities
 - **Integration tests** for API endpoints
 - **Database testing** with test fixtures
 - **Security testing** for authentication and authorization
 
 ### Frontend Testing
+
 - **Component testing** with React Testing Library
 - **Integration tests** for user workflows
 - **E2E testing** with Cypress or Playwright
@@ -273,6 +301,7 @@ npm run lint     # Run ESLint
 5. **Open** a Pull Request
 
 ### Development Guidelines
+
 - Follow existing code style and conventions
 - Add proper error handling and validation
 - Include comprehensive documentation
@@ -286,11 +315,13 @@ This project is licensed under the **ISC License**.
 ## 🆘 Support & Documentation
 
 For detailed setup instructions and API documentation:
+
 - **Backend Documentation**: See `backend/README.md`
 - **Frontend Documentation**: See `frontend/README.md`
 - **API Documentation**: Available at `/api/health` endpoint when server is running
 
 ### Getting Help
+
 1. Check the troubleshooting sections in individual README files
 2. Review the API endpoints documentation
 3. Check browser console and server logs for errors
@@ -299,4 +330,8 @@ For detailed setup instructions and API documentation:
 
 ---
 
-**Built with ❤️ for Walmart Supply Chain Management** 
+**Built with ❤️ for Walmart Supply Chain Management**
+
+### Team Members
+
+Shikhar Sinha
