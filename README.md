@@ -334,6 +334,7 @@ For detailed setup instructions and API documentation:
 
 ### Team Members
 
+Sanskar Dubey
 Shikhar Sinha
-
 Sachin Kumar
+Poorvi Mishra
