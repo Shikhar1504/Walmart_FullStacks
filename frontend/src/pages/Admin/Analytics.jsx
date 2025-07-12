@@ -44,39 +44,39 @@ const mockProducts = [
   { _id: 'mock-product-3', name: 'Mock Product C', sku: 'MOCK-003' },
 ];
 
-// Add mock demand forecast data for time series
+// Add mock demand forecast data for time series - August 2025
 const mockDemandForecast = [
-  { date: '2024-01-01', price: 25.50, demand: 120, confidence: 0.85 },
-  { date: '2024-01-02', price: 26.20, demand: 135, confidence: 0.87 },
-  { date: '2024-01-03', price: 25.80, demand: 128, confidence: 0.84 },
-  { date: '2024-01-04', price: 27.10, demand: 142, confidence: 0.89 },
-  { date: '2024-01-05', price: 26.90, demand: 138, confidence: 0.86 },
-  { date: '2024-01-06', price: 28.30, demand: 155, confidence: 0.92 },
-  { date: '2024-01-07', price: 27.80, demand: 148, confidence: 0.88 },
-  { date: '2024-01-08', price: 29.10, demand: 162, confidence: 0.91 },
-  { date: '2024-01-09', price: 28.70, demand: 158, confidence: 0.89 },
-  { date: '2024-01-10', price: 30.20, demand: 175, confidence: 0.94 },
-  { date: '2024-01-11', price: 29.80, demand: 168, confidence: 0.90 },
-  { date: '2024-01-12', price: 31.50, demand: 185, confidence: 0.93 },
-  { date: '2024-01-13', price: 31.20, demand: 180, confidence: 0.91 },
-  { date: '2024-01-14', price: 32.80, demand: 195, confidence: 0.95 },
-  { date: '2024-01-15', price: 32.50, demand: 190, confidence: 0.93 },
-  { date: '2024-01-16', price: 33.90, demand: 205, confidence: 0.96 },
-  { date: '2024-01-17', price: 33.60, demand: 200, confidence: 0.94 },
-  { date: '2024-01-18', price: 35.20, demand: 215, confidence: 0.97 },
-  { date: '2024-01-19', price: 34.80, demand: 210, confidence: 0.95 },
-  { date: '2024-01-20', price: 36.50, demand: 225, confidence: 0.98 },
-  { date: '2024-01-21', price: 36.20, demand: 220, confidence: 0.96 },
-  { date: '2024-01-22', price: 37.80, demand: 235, confidence: 0.99 },
-  { date: '2024-01-23', price: 37.50, demand: 230, confidence: 0.97 },
-  { date: '2024-01-24', price: 39.10, demand: 245, confidence: 0.98 },
-  { date: '2024-01-25', price: 38.80, demand: 240, confidence: 0.96 },
-  { date: '2024-01-26', price: 40.50, demand: 255, confidence: 0.99 },
-  { date: '2024-01-27', price: 40.20, demand: 250, confidence: 0.97 },
-  { date: '2024-01-28', price: 41.80, demand: 265, confidence: 0.98 },
-  { date: '2024-01-29', price: 41.50, demand: 260, confidence: 0.96 },
-  { date: '2024-01-30', price: 43.20, demand: 275, confidence: 0.99 },
-  { date: '2024-01-31', price: 42.90, demand: 270, confidence: 0.97 },
+  { date: '2025-08-01', price: 25.50, demand: 120, confidence: 0.85 },
+  { date: '2025-08-02', price: 26.20, demand: 135, confidence: 0.87 },
+  { date: '2025-08-03', price: 25.80, demand: 128, confidence: 0.84 },
+  { date: '2025-08-04', price: 27.10, demand: 142, confidence: 0.89 },
+  { date: '2025-08-05', price: 26.90, demand: 138, confidence: 0.86 },
+  { date: '2025-08-06', price: 28.30, demand: 155, confidence: 0.92 },
+  { date: '2025-08-07', price: 27.80, demand: 148, confidence: 0.88 },
+  { date: '2025-08-08', price: 29.10, demand: 162, confidence: 0.91 },
+  { date: '2025-08-09', price: 28.70, demand: 158, confidence: 0.89 },
+  { date: '2025-08-10', price: 30.20, demand: 175, confidence: 0.94 },
+  { date: '2025-08-11', price: 29.80, demand: 168, confidence: 0.90 },
+  { date: '2025-08-12', price: 31.50, demand: 185, confidence: 0.93 },
+  { date: '2025-08-13', price: 31.20, demand: 180, confidence: 0.91 },
+  { date: '2025-08-14', price: 32.80, demand: 195, confidence: 0.95 },
+  { date: '2025-08-15', price: 32.50, demand: 190, confidence: 0.93 },
+  { date: '2025-08-16', price: 33.90, demand: 205, confidence: 0.96 },
+  { date: '2025-08-17', price: 33.60, demand: 200, confidence: 0.94 },
+  { date: '2025-08-18', price: 35.20, demand: 215, confidence: 0.97 },
+  { date: '2025-08-19', price: 34.80, demand: 210, confidence: 0.95 },
+  { date: '2025-08-20', price: 36.50, demand: 225, confidence: 0.98 },
+  { date: '2025-08-21', price: 36.20, demand: 220, confidence: 0.96 },
+  { date: '2025-08-22', price: 37.80, demand: 235, confidence: 0.99 },
+  { date: '2025-08-23', price: 37.50, demand: 230, confidence: 0.97 },
+  { date: '2025-08-24', price: 39.10, demand: 245, confidence: 0.98 },
+  { date: '2025-08-25', price: 38.80, demand: 240, confidence: 0.96 },
+  { date: '2025-08-26', price: 40.50, demand: 255, confidence: 0.99 },
+  { date: '2025-08-27', price: 40.20, demand: 250, confidence: 0.97 },
+  { date: '2025-08-28', price: 41.80, demand: 265, confidence: 0.98 },
+  { date: '2025-08-29', price: 41.50, demand: 260, confidence: 0.96 },
+  { date: '2025-08-30', price: 43.20, demand: 275, confidence: 0.99 },
+  { date: '2025-08-31', price: 42.90, demand: 270, confidence: 0.97 },
 ];
 
 export default function Analytics() {
@@ -413,8 +413,8 @@ export default function Analytics() {
 
           {/* Pricing Time Series Chart */}
           {selectedProduct && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-2">
+            <div className="grid grid-cols-1 gap-6">
+              <Card>
                 <CardHeader>
                   <CardTitle>Pricing Variation Over 30 Days</CardTitle>
                   <CardDescription>How pricing changes based on expiry dates, stock levels, and market factors</CardDescription>
@@ -429,8 +429,9 @@ export default function Analytics() {
                       <AreaChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis 
-                          dataKey="day" 
+                          dataKey={pricingTimeSeries.length > 0 ? "dav" : "day"} 
                           label={{ value: 'Day', position: 'insideBottom', offset: -5 }}
+                          tick={{ fontSize: 12, dy: -5 }}
                         />
                         <YAxis 
                           label={{ value: 'Price ($)', angle: -90, position: 'insideLeft' }}
@@ -456,43 +457,7 @@ export default function Analytics() {
                 </CardContent>
               </Card>
 
-              {/* Pricing Summary */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Pricing Summary</CardTitle>
-                  <CardDescription>Key metrics for the selected product</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {Object.keys(pricingSummary).length > 0 ? (
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-600">Min Price</span>
-                        <span className="text-lg font-semibold text-green-600">${pricingSummary.minPrice}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-600">Max Price</span>
-                        <span className="text-lg font-semibold text-red-600">${pricingSummary.maxPrice}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-600">Average Price</span>
-                        <span className="text-lg font-semibold text-gray-900">${pricingSummary.avgPrice}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-600">Price Volatility</span>
-                        <span className="text-lg font-semibold text-orange-600">{pricingSummary.priceVolatility}%</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-gray-600">Total Revenue</span>
-                        <span className="text-lg font-semibold text-blue-600">${pricingSummary.totalRevenue}</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center text-gray-500 py-8">
-                      Select a product to view pricing summary
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+
 
               {/* Detailed Pricing Table */}
               {pricingTimeSeries.length > 0 && (
@@ -573,15 +538,18 @@ export default function Analytics() {
                     label={{ value: 'Date', position: 'insideBottom', offset: -5 }}
                   />
                   <YAxis 
-                    label={{ value: 'Price ($)', angle: -90, position: 'insideLeft' }}
+                    label={{ value: 'Predicted Price ($)', angle: -90, position: 'insideLeft' }}
                   />
                   <Tooltip 
-                    formatter={(value, name) => [
-                      name === 'price' ? `$${value}` : value,
-                      name === 'price' ? 'Predicted Price' : name === 'demand' ? 'Predicted Demand' : 'Confidence'
-                    ]}
-                    labelFormatter={(label) => new Date(label).toLocaleDateString()}
-                  />
+                   
+                  formatter={(value, name) => {
+                    const displayValue = name === 'Predicted Price' ? `$${value}` : value;
+                    return [displayValue, name];
+                  }}
+                  labelFormatter={(label) => new Date(label).toLocaleDateString()}
+                />
+                
+                   
                   <Line 
                     type="monotone" 
                     dataKey="price" 
@@ -597,7 +565,11 @@ export default function Analytics() {
                     name="Predicted Demand" 
                     yAxisId={1}
                   />
-                  <YAxis yAxisId={1} orientation="right" />
+                  <YAxis 
+                    yAxisId={1} 
+                    orientation="right" 
+                    label={{ value: 'Predicted Demand', angle: 90, position: 'insideRight' }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
               <div className="mt-6 overflow-x-auto">
