@@ -7,6 +7,7 @@ const { authenticateJWT, authorizeRoles } = require('../middleware/authMiddlewar
 router.get('/', supplierController.getSuppliers);
 router.get('/dashboard', supplierController.getSupplierDashboard);
 router.get('/performance/:id', supplierController.getSupplierPerformance);
+router.post('/ai-summary', supplierController.generateAISummary);
 
 // Development route for seeding sample data
 router.post('/seed', supplierController.seedSampleData);

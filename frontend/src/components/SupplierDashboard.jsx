@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import Card, { CardHeader, CardTitle, CardDescription, CardContent } from './UI/Card';
+import { Award, Brain, DollarSign, Edit, MessageSquare, Package, Star } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import Button from './UI/Button';
-import { Star, TrendingUp, TrendingDown, Package, Clock, DollarSign, Leaf, MessageSquare, Users, Award, AlertCircle, CheckCircle, Edit, Brain } from 'lucide-react';
+import Card, { CardContent, CardDescription, CardHeader, CardTitle } from './UI/Card';
 
 // Mock Supplier Data (keeping for fallback)
 const mockSuppliers = [
@@ -135,13 +135,13 @@ const mockSuppliers = [
  * @returns {Object} - Overall rating and breakdown
  */
 const calculateOverallRating = (scores) => {
-  const { performanceScore, qualityScore, deliveryRating, deliveryConsistency } = scores;
+  const { performanceScore, qualityScore, deliveryRating, deliveryConsistency, greenScore } = scores;
   
   // Validate input scores (0-5 range)
-  const validScores = [performanceScore, qualityScore, deliveryRating, deliveryConsistency]
+  const validScores = [performanceScore, qualityScore, deliveryRating, deliveryConsistency, greenScore]
     .filter(score => score >= 0 && score <= 5);
   
-  if (validScores.length !== 4) {
+  if (validScores.length !== 5) {
     return {
       overallRating: 0,
       breakdown: {},
@@ -158,7 +158,8 @@ const calculateOverallRating = (scores) => {
       performanceScore,
       qualityScore,
       deliveryRating,
-      deliveryConsistency
+      deliveryConsistency,
+      greenScore
     },
     isValid: true,
     error: null
@@ -227,7 +228,7 @@ const calculateProfit = (revenue, cost) => {
 
 /**
  * Summarize comments for display
- * @param {Array} commentList - Array of comment strings
+ * @param {Array} commentList - Array of comment strings or objects
  * @returns {Object} - Comment summary statistics
  */
 const summarizeComments = (commentList) => {
@@ -242,30 +243,82 @@ const summarizeComments = (commentList) => {
   }
   
   const totalComments = commentList.length;
-  const averageLength = Math.round(
-    commentList.reduce((sum, comment) => sum + comment.length, 0) / totalComments
-  );
+  
+  // Handle both string comments and object comments
+  const commentTexts = commentList.map(comment => {
+    if (typeof comment === 'string') {
+      return comment;
+    } else if (comment && typeof comment === 'object' && comment.text) {
+      return comment.text;
+    } else if (comment && typeof comment === 'object' && comment.comment) {
+      return comment.comment;
+    }
+    return '';
+  }).filter(text => text.length > 0);
+  
+  const averageLength = commentTexts.length > 0 
+    ? Math.round(commentTexts.reduce((sum, text) => sum + text.length, 0) / commentTexts.length)
+    : 0;
   
   // Simple sentiment analysis based on keywords
-  const positiveWords = ['excellent', 'great', 'good', 'best', 'outstanding', 'satisfied', 'recommend'];
-  const negativeWords = ['poor', 'bad', 'terrible', 'delays', 'issues', 'problems', 'unresponsive'];
+  const positiveWords = ['excellent', 'great', 'good', 'best', 'outstanding', 'satisfied', 'recommend', 'love', 'amazing', 'perfect', 'wonderful', 'fantastic', 'liked', 'nice', 'working', 'without problems', 'happy', 'reliable', 'durable', 'quality'];
+  const negativeWords = ['poor', 'bad', 'terrible', 'delays', 'issues', 'problems', 'unresponsive', 'hate', 'awful', 'worst', 'disappointed', 'broken', 'defective', 'damaged', 'useless', 'waste', 'expensive', 'overpriced', 'cheap', 'low quality', 'unreliable', 'fails', 'doesn\'t work', 'not working', 'dislike', 'horrible', 'disgusting', 'annoying', 'frustrated', 'angry', 'upset'];
   
   let positiveCount = 0;
   let negativeCount = 0;
   
-  commentList.forEach(comment => {
-    const lowerComment = comment.toLowerCase();
+  commentTexts.forEach(text => {
+    const lowerText = text.toLowerCase();
+    let textPositiveScore = 0;
+    let textNegativeScore = 0;
+    
     positiveWords.forEach(word => {
-      if (lowerComment.includes(word)) positiveCount++;
+      if (lowerText.includes(word)) textPositiveScore++;
     });
     negativeWords.forEach(word => {
-      if (lowerComment.includes(word)) negativeCount++;
+      if (lowerText.includes(word)) textNegativeScore++;
     });
+    
+    // Debug logging
+    console.log('🔍 Comment analysis:', {
+      text: text,
+      positiveScore: textPositiveScore,
+      negativeScore: textNegativeScore,
+      positiveMatches: positiveWords.filter(word => lowerText.includes(word)),
+      negativeMatches: negativeWords.filter(word => lowerText.includes(word))
+    });
+    
+    // Weight the sentiment based on word count
+    if (textNegativeScore > textPositiveScore) {
+      negativeCount++;
+    } else if (textPositiveScore > textNegativeScore) {
+      positiveCount++;
+    }
+    // If equal, check for stronger negative indicators
+    else if (textNegativeScore === textPositiveScore && textNegativeScore > 0) {
+      // Check for stronger negative words that indicate clear dissatisfaction
+      const strongNegativeWords = ['hate', 'terrible', 'awful', 'worst', 'useless', 'broken', 'defective', 'disappointed'];
+      const hasStrongNegative = strongNegativeWords.some(word => lowerText.includes(word));
+      if (hasStrongNegative) {
+        negativeCount++;
+      } else {
+        positiveCount++;
+      }
+    }
   });
+  
+  console.log('🔍 Final sentiment counts:', { positiveCount, negativeCount });
   
   let sentiment = "neutral";
   if (positiveCount > negativeCount) sentiment = "positive";
   else if (negativeCount > positiveCount) sentiment = "negative";
+  // If equal counts, check if there are any negative comments at all
+  else if (negativeCount === positiveCount && negativeCount > 0) {
+    // If there are any negative comments, lean towards negative
+    sentiment = "negative";
+  }
+  
+  console.log('🔍 Final sentiment:', sentiment);
   
   return {
     totalComments,
@@ -321,22 +374,27 @@ const calculateDeliveryPerformance = (deliveryMetrics) => {
  */
 const renderStarRating = (rating) => {
   const stars = [];
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-  
+  // Round to nearest 0.5
+  const rounded = Math.round(rating * 2) / 2;
+  const fullStars = Math.floor(rounded);
+  const hasHalfStar = rounded - fullStars === 0.5;
+
   for (let i = 0; i < fullStars; i++) {
-    stars.push(<Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />);
+    stars.push(<Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />);
   }
-  
   if (hasHalfStar) {
-    stars.push(<Star key="half" className="w-4 h-4 fill-yellow-400 text-yellow-400" style={{ clipPath: 'inset(0 50% 0 0)' }} />);
+    stars.push(
+      <Star
+        key="half"
+        className="w-4 h-4 text-yellow-400 fill-yellow-400"
+        style={{ clipPath: 'inset(0 50% 0 0)' }}
+      />
+    );
   }
-  
-  const emptyStars = 5 - Math.ceil(rating);
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
   for (let i = 0; i < emptyStars; i++) {
     stars.push(<Star key={`empty-${i}`} className="w-4 h-4 text-gray-300" />);
   }
-  
   return <div className="flex">{stars}</div>;
 };
 
@@ -347,6 +405,8 @@ const SupplierDashboard = () => {
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [showPricingDetails, setShowPricingDetails] = useState(false);
   const [showSupplierModal, setShowSupplierModal] = useState(false);
+  const [aiSummaries, setAiSummaries] = useState({});
+  const [summaryLoading, setSummaryLoading] = useState({});
 
   // Fetch suppliers and pricing data
   useEffect(() => {
@@ -361,35 +421,8 @@ const SupplierDashboard = () => {
         
         if (suppliersResponse.ok) {
           const suppliersData = await suppliersResponse.json();
-          // Add sample comments to suppliers that don't have them
-          const suppliersWithComments = suppliersData.map(supplier => {
-            if (!supplier.comments || supplier.comments.length === 0) {
-              // Add sample comments based on supplier performance
-              const sampleComments = [
-                "Good quality products and reliable delivery",
-                "Competitive pricing and good value",
-                "Responsive customer service team",
-                "Products meet our specifications",
-                "Would recommend to other businesses",
-                "Some minor delays but overall satisfied",
-                "Quality is consistent across orders",
-                "Good communication throughout the process"
-              ];
-              
-              // Add some negative comments for variety (20% chance)
-              if (Math.random() < 0.2) {
-                sampleComments.push("Occasional delivery delays");
-                sampleComments.push("Some quality issues in recent batches");
-              }
-              
-              return {
-                ...supplier,
-                comments: sampleComments
-              };
-            }
-            return supplier;
-          });
-          setSuppliers(suppliersWithComments);
+          // Use suppliers data as-is without adding fake comments
+          setSuppliers(suppliersData);
         } else {
           // Fallback to mock data
           setSuppliers(mockSuppliers);
@@ -455,7 +488,7 @@ const SupplierDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="w-12 h-12 border-b-2 border-blue-600 rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -463,7 +496,7 @@ const SupplierDashboard = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Supplier Dashboard</h1>
           <p className="text-gray-600">Manage and monitor supplier relationships and pricing</p>
@@ -472,9 +505,8 @@ const SupplierDashboard = () => {
       </div>
 
       {/* Supplier Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {suppliers.map((supplier) => {
-          const rating = calculateOverallRating(supplier);
           const profit = calculateProfit(supplier.totalRevenue, supplier.totalCost);
           const greenScore = getGreenScore(supplier);
           const deliveryPerformance = calculateDeliveryPerformance(supplier.deliveryMetrics);
@@ -483,20 +515,20 @@ const SupplierDashboard = () => {
           return (
             <Card 
               key={supplier._id || supplier.id} 
-              className="hover:shadow-lg transition-shadow cursor-pointer"
+              className="transition-shadow cursor-pointer hover:shadow-lg"
               onClick={() => {
                 setSelectedSupplier(supplier);
                 setShowSupplierModal(true);
               }}
             >
               <CardHeader>
-                <div className="flex justify-between items-start">
+                <div className="flex items-start justify-between">
                   <div>
                     <CardTitle className="text-lg">{supplier.name}</CardTitle>
                     <CardDescription>{supplier.supplierId}</CardDescription>
                   </div>
                   <div className="text-right">
-                    {rating.isValid && renderStarRating(rating.overallRating)}
+                    {typeof supplier.overallRating === 'number' && renderStarRating(supplier.overallRating)}
                   </div>
                 </div>
               </CardHeader>
@@ -530,14 +562,14 @@ const SupplierDashboard = () => {
                 </div>
 
                 {/* Financial Summary */}
-                <div className="border-t pt-3">
-                  <div className="flex justify-between items-center">
+                <div className="pt-3 border-t">
+                  <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Revenue</span>
                     <span className="font-semibold text-green-600">
                       ${(supplier.totalRevenue / 1000).toFixed(1)}K
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Profit</span>
                     <span className="font-semibold text-blue-600">
                       ${(profit.profit / 1000).toFixed(1)}K
@@ -547,14 +579,14 @@ const SupplierDashboard = () => {
 
                 {/* Pricing Items Summary */}
                 {supplierPricingItems.length > 0 && (
-                  <div className="border-t pt-3">
-                    <div className="flex justify-between items-center">
+                  <div className="pt-3 border-t">
+                    <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Pricing Items</span>
                       <span className="font-semibold text-purple-600">
                         {supplierPricingItems.length}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Avg. ML Score</span>
                       <span className="font-semibold text-purple-600">
                         {Math.round(supplierPricingItems.reduce((sum, item) => sum + (item.mlScore || 0), 0) / supplierPricingItems.length)}%
@@ -564,53 +596,49 @@ const SupplierDashboard = () => {
                 )}
 
                 {/* Comments Summary */}
-                {supplier.comments && supplier.comments.length > 0 && (
-                  <div className="border-t pt-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-600">Customer Feedback</span>
-                      <span className="text-xs text-gray-500">
-                        {supplier.comments.length} comments
-                      </span>
-                    </div>
+                <div className="pt-3 border-t">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-600">Customer Feedback</span>
+                    <span className="text-xs text-gray-500">
+                      {supplier.commentSummary?.totalComments || supplier.comments?.length || 0} comments
+                    </span>
+                  </div>
+                  
+                  {(() => {
+                    const commentSummary = supplier.commentSummary || summarizeComments(supplier.comments || []);
+                    const hasComments = (supplier.comments && supplier.comments.length > 0);
                     
-                    {(() => {
-                      const commentSummary = summarizeComments(supplier.comments);
+                    if (!hasComments) {
                       return (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-600">Sentiment</span>
-                            <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                              commentSummary.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
-                              commentSummary.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
-                              {commentSummary.sentiment.charAt(0).toUpperCase() + commentSummary.sentiment.slice(1)}
-                            </span>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-600">Avg. Length</span>
-                            <span className="text-xs font-medium">
-                              {commentSummary.averageLength} words
-                            </span>
-                          </div>
-                          
-                          {/* Key Insights */}
-                          <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
-                            <p className="text-gray-700 font-medium mb-1">Key Insights:</p>
-                            <ul className="text-gray-600 space-y-1">
-                              {supplier.comments.slice(0, 2).map((comment, index) => (
-                                <li key={index} className="truncate">
-                                  "{comment.length > 50 ? comment.substring(0, 50) + '...' : comment}"
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
+                        <div className="text-xs italic text-gray-500">
+                          No customer feedback available
                         </div>
                       );
-                    })()}
-                  </div>
-                )}
+                    }
+                    
+                    return (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-600">Sentiment</span>
+                          <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                            commentSummary.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
+                            commentSummary.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {commentSummary.sentiment.charAt(0).toUpperCase() + commentSummary.sentiment.slice(1)}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-600">Avg. Length</span>
+                          <span className="text-xs font-medium">
+                            {commentSummary.averageLength} words
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
 
                 {/* Action Buttons */}
                 <div className="flex space-x-2">
@@ -659,20 +687,20 @@ const SupplierDashboard = () => {
                 
                 if (supplierPricingItems.length === 0) {
                   return (
-                    <div key={supplier._id || supplier.id} className="border rounded-lg p-4">
-                      <h3 className="font-semibold text-gray-900 mb-2">{supplier.name}</h3>
+                    <div key={supplier._id || supplier.id} className="p-4 border rounded-lg">
+                      <h3 className="mb-2 font-semibold text-gray-900">{supplier.name}</h3>
                       <p className="text-gray-500">No pricing items found for this supplier</p>
                     </div>
                   );
                 }
 
                 return (
-                  <div key={supplier._id || supplier.id} className="border rounded-lg p-4">
-                    <h3 className="font-semibold text-gray-900 mb-4">{supplier.name}</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div key={supplier._id || supplier.id} className="p-4 border rounded-lg">
+                    <h3 className="mb-4 font-semibold text-gray-900">{supplier.name}</h3>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                       {supplierPricingItems.map((item) => (
-                        <div key={item._id} className="border rounded-lg p-3 hover:shadow-md transition-shadow">
-                          <div className="flex justify-between items-start mb-2">
+                        <div key={item._id} className="p-3 transition-shadow border rounded-lg hover:shadow-md">
+                          <div className="flex items-start justify-between mb-2">
                             <div>
                               <h4 className="font-medium text-gray-900">{item.name}</h4>
                               <p className="text-sm text-gray-500">{item.sku} • {item.category}</p>
@@ -697,7 +725,7 @@ const SupplierDashboard = () => {
                             </div>
                             <div>
                               <p className="text-xs text-gray-600">ML Score</p>
-                              <p className="font-semibold flex items-center">
+                              <p className="flex items-center font-semibold">
                                 <Brain className="w-3 h-3 mr-1" />
                                 {item.mlScore}%
                               </p>
@@ -714,7 +742,7 @@ const SupplierDashboard = () => {
                             </div>
                           )}
 
-                          <div className="flex justify-between items-center">
+                          <div className="flex items-center justify-between">
                             <span className={`text-xs ${item.priceChange.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
                               {item.priceChange}
                             </span>
@@ -736,7 +764,7 @@ const SupplierDashboard = () => {
 
       {/* Supplier Details Modal */}
       {showSupplierModal && selectedSupplier && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
           <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               {/* Header */}
@@ -755,7 +783,7 @@ const SupplierDashboard = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {/* Left Column - Performance & Financial */}
                 <div className="space-y-6">
                   {/* Performance Overview */}
@@ -768,32 +796,29 @@ const SupplierDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="p-3 text-center rounded-lg bg-blue-50">
                           <p className="text-2xl font-bold text-blue-600">{selectedSupplier.performanceScore}</p>
                           <p className="text-sm text-gray-600">Performance Score</p>
                         </div>
-                        <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="p-3 text-center rounded-lg bg-green-50">
                           <p className="text-2xl font-bold text-green-600">{selectedSupplier.qualityScore}</p>
                           <p className="text-sm text-gray-600">Quality Score</p>
                         </div>
-                        <div className="text-center p-3 bg-purple-50 rounded-lg">
+                        <div className="p-3 text-center rounded-lg bg-purple-50">
                           <p className="text-2xl font-bold text-purple-600">{selectedSupplier.deliveryRating}</p>
                           <p className="text-sm text-gray-600">Delivery Rating</p>
                         </div>
-                        <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                        <div className="p-3 text-center rounded-lg bg-yellow-50">
                           <p className="text-2xl font-bold text-yellow-600">{selectedSupplier.greenScore}</p>
                           <p className="text-sm text-gray-600">Green Score</p>
                         </div>
                       </div>
                       
                       {/* Overall Rating */}
-                      <div className="mt-4 pt-4 border-t">
+                      <div className="pt-4 mt-4 border-t">
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-medium text-gray-700">Overall Rating</span>
-                          {(() => {
-                            const rating = calculateOverallRating(selectedSupplier);
-                            return rating.isValid ? renderStarRating(rating.overallRating) : <span>N/A</span>;
-                          })()}
+                          {typeof selectedSupplier.overallRating === 'number' ? renderStarRating(selectedSupplier.overallRating) : <span>N/A</span>}
                         </div>
                       </div>
                     </CardContent>
@@ -812,28 +837,28 @@ const SupplierDashboard = () => {
                         const profit = calculateProfit(selectedSupplier.totalRevenue, selectedSupplier.totalCost);
                         return (
                           <div className="space-y-4">
-                            <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
                               <span className="text-gray-700">Total Revenue</span>
                               <span className="text-xl font-bold text-green-600">
                                 ${(selectedSupplier.totalRevenue / 1000).toFixed(1)}K
                               </span>
                             </div>
-                            <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50">
                               <span className="text-gray-700">Total Cost</span>
                               <span className="text-xl font-bold text-blue-600">
                                 ${(selectedSupplier.totalCost / 1000).toFixed(1)}K
                               </span>
                             </div>
-                            <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50">
                               <span className="text-gray-700">Net Profit</span>
                               <span className="text-xl font-bold text-purple-600">
                                 ${(profit.profit / 1000).toFixed(1)}K
                               </span>
                             </div>
-                            <div className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50">
                               <span className="text-gray-700">Profit Margin</span>
                               <span className="text-xl font-bold text-yellow-600">
-                                {profit.marginPercentage}%
+                                {typeof selectedSupplier.profitMargin === 'number' ? selectedSupplier.profitMargin + '%' : 'N/A'}
                               </span>
                             </div>
                           </div>
@@ -856,31 +881,31 @@ const SupplierDashboard = () => {
                           const deliveryPerformance = calculateDeliveryPerformance(selectedSupplier.deliveryMetrics);
                           return (
                             <div className="space-y-4">
-                              <div className="flex justify-between items-center">
+                              <div className="flex items-center justify-between">
                                 <span className="text-gray-700">On-Time Deliveries</span>
                                 <span className="font-semibold">
                                   {selectedSupplier.deliveryMetrics.onTimeDeliveries} / {selectedSupplier.deliveryMetrics.totalDeliveries}
                                 </span>
                               </div>
-                              <div className="flex justify-between items-center">
+                              <div className="flex items-center justify-between">
                                 <span className="text-gray-700">On-Time Percentage</span>
                                 <span className="font-semibold text-green-600">
                                   {deliveryPerformance.onTimePercentage}%
                                 </span>
                               </div>
-                              <div className="flex justify-between items-center">
+                              <div className="flex items-center justify-between">
                                 <span className="text-gray-700">Average Delivery Time</span>
                                 <span className="font-semibold">
                                   {selectedSupplier.deliveryMetrics.averageDeliveryTime} days
                                 </span>
                               </div>
-                              <div className="flex justify-between items-center">
+                              <div className="flex items-center justify-between">
                                 <span className="text-gray-700">Late Deliveries</span>
                                 <span className="font-semibold text-red-600">
                                   {selectedSupplier.deliveryMetrics.lateDeliveries}
                                 </span>
                               </div>
-                              <div className="flex justify-between items-center">
+                              <div className="flex items-center justify-between">
                                 <span className="text-gray-700">Damaged Shipments</span>
                                 <span className="font-semibold text-orange-600">
                                   {selectedSupplier.deliveryMetrics.damagedShipments}
@@ -897,52 +922,163 @@ const SupplierDashboard = () => {
                 {/* Right Column - Comments & Products */}
                 <div className="space-y-6">
                   {/* Customer Comments */}
-                  {selectedSupplier.comments && selectedSupplier.comments.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center">
-                          <MessageSquare className="w-5 h-5 mr-2" />
-                          Customer Feedback ({selectedSupplier.comments.length} comments)
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        {(() => {
-                          const commentSummary = summarizeComments(selectedSupplier.comments);
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <MessageSquare className="w-5 h-5 mr-2" />
+                        Customer Feedback ({selectedSupplier.commentSummary?.totalComments || selectedSupplier.comments?.length || 0} comments)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {(() => {
+                        const commentSummary = selectedSupplier.commentSummary || summarizeComments(selectedSupplier.comments || []);
+                        const hasComments = (selectedSupplier.comments && selectedSupplier.comments.length > 0);
+                        
+                        if (!hasComments) {
                           return (
-                            <div className="space-y-4">
-                              {/* Sentiment Summary */}
-                              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <span className="text-gray-700">Overall Sentiment</span>
-                                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                  commentSummary.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
-                                  commentSummary.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
-                                  'bg-gray-100 text-gray-800'
-                                }`}>
-                                  {commentSummary.sentiment.charAt(0).toUpperCase() + commentSummary.sentiment.slice(1)}
-                                </span>
-                              </div>
-
-                              {/* All Comments */}
-                              <div className="space-y-3 max-h-64 overflow-y-auto">
-                                {selectedSupplier.comments.map((comment, index) => (
-                                  <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                                    <p className="text-sm text-gray-700">"{comment}"</p>
-                                  </div>
-                                ))}
-                              </div>
+                            <div className="py-8 text-center text-gray-500">
+                              <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                              <p className="text-lg font-medium">No customer feedback</p>
+                              <p className="text-sm">This supplier has not received any customer comments yet.</p>
                             </div>
                           );
-                        })()}
-                      </CardContent>
-                    </Card>
-                  )}
+                        }
+                        
+                        // Generate AI-powered summary using actual AI service
+                        const generateSummary = async (comments) => {
+                          if (!comments || comments.length === 0) return "No feedback available.";
+                          
+                          const commentTexts = comments.map(comment => comment.text || comment).filter(text => text.length > 0);
+                          if (commentTexts.length === 0) return "No feedback available.";
+                          
+                          try {
+                            // Call backend AI endpoint
+                            const response = await fetch('http://localhost:5000/api/suppliers/ai-summary', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify({ comments: commentTexts })
+                            });
+
+                            if (response.ok) {
+                              const data = await response.json();
+                              return data.summary;
+                            } else {
+                              // Fallback to local analysis if AI service fails
+                              return generateLocalSummary(commentTexts);
+                            }
+                          } catch (error) {
+                            console.log('AI service unavailable, using local analysis');
+                            // Fallback to local analysis
+                            return generateLocalSummary(commentTexts);
+                          }
+                        };
+
+                        // Local fallback analysis
+                        const generateLocalSummary = (commentTexts) => {
+                          const totalComments = commentTexts.length;
+                          const avgLength = Math.round(commentTexts.reduce((sum, comment) => sum + comment.split(' ').length, 0) / totalComments);
+                          
+                          // Simple sentiment analysis
+                          const positiveWords = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic', 'perfect', 'love', 'liked', 'nice', 'working', 'without problems', 'satisfied', 'happy', 'recommend'];
+                          const negativeWords = ['bad', 'terrible', 'awful', 'hate', 'dislike', 'broken', 'defective', 'problem', 'issue', 'disappointed', 'waste', 'poor', 'worst'];
+                          
+                          let positiveCount = 0;
+                          let negativeCount = 0;
+                          
+                          commentTexts.forEach(comment => {
+                            const lowerComment = comment.toLowerCase();
+                            const positiveMatches = positiveWords.filter(word => lowerComment.includes(word)).length;
+                            const negativeMatches = negativeWords.filter(word => lowerComment.includes(word)).length;
+                            
+                            if (positiveMatches > negativeMatches) {
+                              positiveCount++;
+                            } else if (negativeMatches > positiveMatches) {
+                              negativeCount++;
+                            }
+                          });
+                          
+                          if (positiveCount > negativeCount) {
+                            return `Customer feedback shows strong satisfaction with ${positiveCount} out of ${totalComments} positive comments. Customers appreciate the product quality and reliability, with detailed feedback averaging ${avgLength} words per comment. The supplier maintains excellent customer relationships.`;
+                          } else if (negativeCount > positiveCount) {
+                            return `Customer feedback indicates concerns with ${negativeCount} out of ${totalComments} negative comments. Areas for improvement have been identified and should be addressed to enhance customer satisfaction.`;
+                          } else {
+                            return `Customer feedback is mixed with ${positiveCount} positive and ${negativeCount} negative comments out of ${totalComments} total. While generally satisfactory, there are specific areas that could be enhanced.`;
+                          }
+                        };
+                        
+                        return (
+                          <div className="space-y-4">
+                            {/* Summary Stats */}
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="p-3 rounded-lg bg-blue-50">
+                                <p className="text-lg font-bold text-blue-600">{commentSummary.averageRating || 0}</p>
+                                <p className="text-sm text-gray-600">Average Rating</p>
+                              </div>
+                              <div className="p-3 rounded-lg bg-green-50">
+                                <p className="text-lg font-bold text-green-600">{commentSummary.averageLength}</p>
+                                <p className="text-sm text-gray-600">Avg. Length (words)</p>
+                              </div>
+                            </div>
+
+                            {/* Comprehensive Summary */}
+                            <div className="p-4 rounded-lg bg-gray-50">
+                              <h4 className="mb-2 font-medium text-gray-900">Customer Feedback Summary</h4>
+                              {(() => {
+                                const supplierId = selectedSupplier._id || selectedSupplier.id;
+                                const isLoading = summaryLoading[supplierId];
+                                const cachedSummary = aiSummaries[supplierId];
+                                
+                                if (isLoading) {
+                                  return (
+                                    <div className="flex items-center space-x-2">
+                                      <div className="w-4 h-4 border-2 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                                      <span className="text-sm text-gray-600">AI is analyzing feedback...</span>
+                                    </div>
+                                  );
+                                }
+                                
+                                if (cachedSummary) {
+                                  return <p className="text-sm leading-relaxed text-gray-700">{cachedSummary}</p>;
+                                }
+                                
+                                // Generate AI summary
+                                const generateAISummary = async () => {
+                                  setSummaryLoading(prev => ({ ...prev, [supplierId]: true }));
+                                  try {
+                                    const summary = await generateSummary(selectedSupplier.comments);
+                                    setAiSummaries(prev => ({ ...prev, [supplierId]: summary }));
+                                  } catch (error) {
+                                    console.error('Error generating AI summary:', error);
+                                  } finally {
+                                    setSummaryLoading(prev => ({ ...prev, [supplierId]: false }));
+                                  }
+                                };
+                                
+                                // Start generation
+                                generateAISummary();
+                                
+                                return (
+                                  <div className="flex items-center space-x-2">
+                                    <div className="w-4 h-4 border-2 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                                    <span className="text-sm text-gray-600">AI is analyzing feedback...</span>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </CardContent>
+                  </Card>
 
                   {/* Removed Supplier Products section as requested */}
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end space-x-3 mt-6 pt-6 border-t">
+              <div className="flex justify-end pt-6 mt-6 space-x-3 border-t">
                 <Button variant="outline" onClick={() => setShowSupplierModal(false)}>
                   Close
                 </Button>

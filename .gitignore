@@ -179,3 +179,5 @@ dev/
 # Specific to this project
 backend/.env
 frontend/.env 
+
+/backend/.env
